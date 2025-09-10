@@ -1,9 +1,9 @@
 import React from 'react';
-import DashboardSelectionPage from './pages/DashboardSelectionPage';
+import CricketApplicationWebsite from './components/cricketApplication';
 import './App.css';
 
 function App() {
-  return <DashboardSelectionPage />;
+  return <CricketApplicationWebsite />;
 }
 
 export default App; 
