@@ -1,4 +1,3 @@
-import React from 'react';
 import CricketApplicationWebsite from './components/cricketApplication';
 import './styles/App.css';
 
