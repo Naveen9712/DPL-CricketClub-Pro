@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Users, CreditCard, CheckCircle, User, Phone, Mail, MapPin, Trophy, Settings, Menu, X } from 'lucide-react';
 
 interface FormData {
@@ -531,7 +531,14 @@ const AdminPage = ({ applications }: { applications: Application[] }) => (
 // Main Component
 const CricketApplicationWebsite = () => {
   const [currentView, setCurrentView] = useState('home');
-  const [applications, setApplications] = useState<Application[]>([]);
+  const [applications, setApplications] = useState<Application[]>(() => {
+    try {
+      const stored = localStorage.getItem('applications');
+      return stored ? (JSON.parse(stored) as Application[]) : [];
+    } catch {
+      return [];
+    }
+  });
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
@@ -546,6 +553,15 @@ const CricketApplicationWebsite = () => {
   });
   const [paymentStep, setPaymentStep] = useState(1);
   const [transactionId, setTransactionId] = useState('');
+
+  // Persist applications to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem('applications', JSON.stringify(applications));
+    } catch (error) {
+      console.error('Failed to save applications to localStorage', error);
+    }
+  }, [applications]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -579,7 +595,11 @@ const CricketApplicationWebsite = () => {
         applicationDate: new Date().toLocaleString(),
         id: Date.now()
       };
-      setApplications([...applications, newApplication]);
+      const updatedApplications = [...applications, newApplication];
+      setApplications(updatedApplications);
+      try {
+        localStorage.setItem('applications', JSON.stringify(updatedApplications));
+      } catch {}
       setPaymentStep(4);
       
       // Reset form after successful submission
